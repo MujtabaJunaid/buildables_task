@@ -14,10 +14,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = Groq(api_key=os.environ.get("groq_api_key"))
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 class MessageRequest(BaseModel):
     message: str
+
+@app.get("/")
+async def root():
+    return {"message": "Backend is running"}
 
 @app.post("/api/chat")
 async def chat(data: MessageRequest):
