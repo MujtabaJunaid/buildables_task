@@ -16,7 +16,8 @@ const App = () => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setUserInput('');
 
-      const apiUrl = 'https://your-app-name.herokuapp.com/api/chat';
+      const apiUrl = 'https://backend-buildables.herokuapp.com/api/chat';
+
 
       try {
         const response = await fetch(apiUrl, {
