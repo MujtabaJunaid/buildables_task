@@ -2,24 +2,19 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from dotenv import load_dotenv
 from groq import Groq
-
-load_dotenv()
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["https://mujtabajunaid.github.io"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-client = Groq(
-    api_key=os.getenv("GROQ_API_KEY"),
-)
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 class MessageRequest(BaseModel):
     message: str
@@ -58,9 +53,4 @@ async def chat(data: MessageRequest):
         return {"response": bot_message}
 
     except Exception as e:
-        print("Error:", e)
         raise HTTPException(status_code=500, detail="There was an error processing your request. Please try again later.")
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
