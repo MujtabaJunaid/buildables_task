@@ -16,15 +16,26 @@ const App = () => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setUserInput('');
 
-      const response = await fetch('http://localhost:8000/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userInput }),
-      });
-      const data = await response.json();
-      const botMessage = { text: data.response, sender: 'bot' };
-      setMessages((prevMessages) => [...prevMessages, botMessage]);
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userInput }),
+        });
+        const data = await response.json();
+        const botMessage = { text: data.response, sender: 'bot' };
+        setMessages((prevMessages) => [...prevMessages, botMessage]);
+      } catch (error) {
+        const errorMessage = { text: 'Service unavailable. Please try again later.', sender: 'bot' };
+        setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      }
       scrollToBottom();
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
     }
   };
 
@@ -51,6 +62,7 @@ const App = () => {
           type="text"
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
+          onKeyPress={handleKeyPress}
           placeholder="Type your message..."
         />
         <button onClick={handleSendMessage} disabled={!userInput.trim()}>
